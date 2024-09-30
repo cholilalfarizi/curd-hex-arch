@@ -22,11 +22,10 @@ type IProductRepository interface{
 	Delete(id int) error
 }
 
-// type IProductHandlers interface{
-// 	FindAll(c *fiber.Ctx) utils.ServiceResponse
-// 	Create(c *fiber.Ctx) utils.ServiceResponse
-// }
+type IProfilingService interface {
+	Log(profiling model.Profiling) error
+}
 
-// type IServer interface{
-// 	Initialize()
-// }
+type IProfilingRepository interface {
+	Create(profiling model.Profiling) error
+}

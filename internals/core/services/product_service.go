@@ -7,6 +7,8 @@ import (
 	"database/sql"
 	"net/http"
 	"strconv"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ProductService struct {
@@ -97,10 +99,24 @@ func (s *ProductService) FindByID(id int) utils.ServiceResponse {
 	// Fetch product by ID from repository
 	product, err := s.productRepository.FindByID(id)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return utils.ServiceResponse{
+				Code:    http.StatusNotFound,
+				Message: "Product with ID " + strconv.Itoa(id) + " not found",
+				Data:    nil,
+			}
+		}
+		if err == sql.ErrNoRows {
+			return utils.ServiceResponse{
+				Code:    http.StatusNotFound,
+				Message: "Product with ID " + strconv.Itoa(id) + " not found",
+				Data:    nil,
+			}
+		}
 		return utils.ServiceResponse{
-			Code:    http.StatusNotFound,
-			Message: "Product with ID " + strconv.Itoa(id) + " not found",
-			Data:    nil,
+			Code:    http.StatusInternalServerError,
+			Message: "Failed to fetch product",
+			Data:    err.Error(),
 		}
 	}
 
