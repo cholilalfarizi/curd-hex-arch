@@ -25,6 +25,13 @@ func NewProductService(repository ports.IProductRepository) *ProductService{
 func (s *ProductService) FindAll() utils.ServiceResponse {
 	products, err := s.productRepository.FindAll()
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return utils.ServiceResponse{
+				Code:    http.StatusNotFound,
+				Message: "Product not found",
+				Data:    nil,
+			}
+		}
 		return utils.ServiceResponse{
 			Code:    http.StatusInternalServerError,
 			Message: "Failed to fetch products",
@@ -33,7 +40,7 @@ func (s *ProductService) FindAll() utils.ServiceResponse {
 	}
 	return utils.ServiceResponse{
 		Code:    http.StatusOK,
-		Message: "Get Products successfully",
+		Message: "Get Products Successfully",
 		Data:    products,
 	}
 }
@@ -63,7 +70,7 @@ func (s *ProductService) Create(productData map[string]string) utils.ServiceResp
 	if len(arrErrors) > 0 {
 		return utils.ServiceResponse{
 			Code:    http.StatusBadRequest,
-			Message: "Validation error",
+			Message: "Validation Error",
 			Data:    arrErrors,
 		}
 	}
@@ -115,14 +122,14 @@ func (s *ProductService) FindByID(id int) utils.ServiceResponse {
 		}
 		return utils.ServiceResponse{
 			Code:    http.StatusInternalServerError,
-			Message: "Failed to fetch product",
+			Message: "Failed to get product",
 			Data:    err.Error(),
 		}
 	}
 
 	return utils.ServiceResponse{
 		Code:    http.StatusOK,
-		Message: "Product fetched successfully",
+		Message: "Get Product Successfully",
 		Data:    product,
 	}
 }
