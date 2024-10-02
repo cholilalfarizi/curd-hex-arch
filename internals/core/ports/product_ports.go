@@ -2,8 +2,7 @@ package ports
 
 import (
 	model "crud-hex/internals/core/domain"
-	utils "crud-hex/internals/utils"
-	// fiber "github.com/gofiber/fiber/v2"
+	"crud-hex/pkg/utils"
 )
 
 type IProductService interface{

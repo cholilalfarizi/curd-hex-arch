@@ -1,4 +1,4 @@
-package utils
+package config
 
 import (
 	"log"
@@ -9,6 +9,11 @@ import (
 type Config struct {
 	MongoURI       string
 	DBName         string
+	MySQLUser   string
+ 	MySQLPassword   string
+ 	MySQLHost   string
+ 	MySQLPort   string
+ 	MySQLDB string
    }
 
    func LoadConfig() *Config {
@@ -20,5 +25,10 @@ type Config struct {
 	return &Config{
 	 MongoURI:       os.Getenv("MONGO_URI"),
 	 DBName:         os.Getenv("DB_NAME"),
+	 MySQLUser: os.Getenv("MYSQL_USER"),
+	 MySQLPassword: os.Getenv("MYSQL_PASSWORD"),
+	 MySQLHost: os.Getenv("MYSQL_HOST"),
+	 MySQLPort: os.Getenv("MYSQL_PORT"),
+	 MySQLDB: os.Getenv("MYSQL_DB"),
 	}
    }

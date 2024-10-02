@@ -1,3 +1,5 @@
+// internals\core\domain\product.go
+
 package domain
 
 type Product struct {
@@ -16,8 +18,4 @@ func NewProduct(id int, name string, price int, stock int, isAvailable bool) *Pr
 		Stock:       stock,
 		IsAvailable: isAvailable,
 	}
-}
-
-func (p *Product) GetProductName() string {
-	return p.Name
 }

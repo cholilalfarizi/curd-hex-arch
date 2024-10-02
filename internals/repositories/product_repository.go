@@ -12,9 +12,13 @@ type ProductRepository struct {
 	db *sql.DB
 }
 
+func NewProductRepository(db *sql.DB) ports.IProductRepository {
+	return &ProductRepository{db: db}
+}
+
 // Create implements ports.IProductRepository.
 func (r *ProductRepository) Create(product *model.Product) error {
-	result, err := r.db.Exec("INSERT INTO products (name, stock, price, is_available) VALUES (?,?,?,?)", 
+	result, err := r.db.Exec("INSERT INTO product (name, stock, price, is_available) VALUES (?,?,?,?)", 
 		product.Name, product.Stock, product.Price, product.IsAvailable)
 	
 	if err != nil {
@@ -34,7 +38,7 @@ func (r *ProductRepository) Create(product *model.Product) error {
 
 // FindAll implements ports.IProductRepository.
 func (r *ProductRepository) FindAll() ([]model.Product, error) {
-	rows, err := r.db.Query("SELECT id, name, stock, price, is_available FROM products WHERE is_available = true")
+	rows, err := r.db.Query("SELECT id, name, stock, price, is_available FROM product WHERE is_available = true")
 	if err != nil {
 		return nil, err
 	}
@@ -53,21 +57,19 @@ func (r *ProductRepository) FindAll() ([]model.Product, error) {
 
 func (r *ProductRepository) FindByID(id int) (model.Product, error) {
 	var product model.Product
-	err := r.db.QueryRow("SELECT id, name, stock, price, is_available FROM products WHERE id = ?", id).Scan(
+	err := r.db.QueryRow("SELECT id, name, stock, price, is_available FROM product WHERE id = ?", id).Scan(
 		&product.ID, &product.Name, &product.Stock, &product.Price, &product.IsAvailable)
 	return product, err
 }
 
 func (r *ProductRepository) Update(product model.Product) error {
-	_, err := r.db.Exec("UPDATE products SET name = ?, stock = ?, price = ? WHERE id = ?", product.Name, product.Stock, product.Price ,product.ID)
+	_, err := r.db.Exec("UPDATE product SET name = ?, stock = ?, price = ? WHERE id = ?", product.Name, product.Stock, product.Price ,product.ID)
 	return err
 }
 
 func (r *ProductRepository) Delete(id int) error {
-	_, err := r.db.Exec("UPDATE products SET is_available = false WHERE id = ?", id)
+	_, err := r.db.Exec("UPDATE product SET is_available = false WHERE id = ?", id)
 	return err
 }
 
-func NewProductRepository(db *sql.DB) ports.IProductRepository {
-	return &ProductRepository{db: db}
-}
+

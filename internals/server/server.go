@@ -5,8 +5,9 @@ import (
 	"crud-hex/internals/core/services"
 	"crud-hex/internals/handlers"
 	repo "crud-hex/internals/repositories"
-	"crud-hex/internals/utils"
+	"crud-hex/pkg/config"
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -16,7 +17,7 @@ import (
 )
 
 func Setup() *fiber.App{
-	cfg := utils.LoadConfig()
+	cfg := config.LoadConfig()
 
 	clientOptions := options.Client().ApplyURI(cfg.MongoURI)
 	client, err := mongoDriver.Connect(context.Background(), clientOptions)
@@ -24,16 +25,22 @@ func Setup() *fiber.App{
 		log.Fatal(err)
 	}
 
-	//Ping to MongoDB
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	//Obtain reference to MongoDB database
 	mongoDB := client.Database(cfg.DBName)
 
-	db, err := sql.Open("mysql", "root:admin123@tcp(localhost:3306)/db_storage")
+	mysqlDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		cfg.MySQLUser,
+		cfg.MySQLPassword,
+		cfg.MySQLHost,
+		cfg.MySQLPort,
+		cfg.MySQLDB,
+	)
+
+	db, err := sql.Open("mysql", mysqlDSN)
 
 	if err != nil{
 		log.Fatal(err)

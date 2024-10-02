@@ -3,7 +3,7 @@ package services
 import (
 	model "crud-hex/internals/core/domain"
 	"crud-hex/internals/core/ports"
-	"crud-hex/internals/utils"
+	"crud-hex/pkg/utils"
 	"database/sql"
 	"net/http"
 	"strconv"
